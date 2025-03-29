@@ -1,0 +1,79 @@
+MariaDB [TASK3]> USE TASK4;
+Database changed
+MariaDB [TASK4]> CREATE TABLE Customers (
+    ->     id INT AUTO_INCREMENT PRIMARY KEY,
+    ->     name VARCHAR(100) NOT NULL,
+    ->     email VARCHAR(100) UNIQUE NOT NULL
+    -> );
+Query OK, 0 rows affected (0.012 sec)
+
+MariaDB [TASK4]> 
+MariaDB [TASK4]> CREATE TABLE Orders (
+    ->     id INT AUTO_INCREMENT PRIMARY KEY,
+    ->     customer_id INT NOT NULL,
+    ->     product VARCHAR(100) NOT NULL,
+    ->     amount DECIMAL(10,2) NOT NULL,
+    ->     FOREIGN KEY (customer_id) REFERENCES Customers(id) ON DELETE CASCADE
+    -> );
+Query OK, 0 rows affected (0.004 sec)
+
+MariaDB [TASK4]> INSERT INTO Customers (name, email) VALUES
+    -> ('Person1', 'person1@example.com'),
+    -> ('Person2', 'person2@example.com'),
+    -> ('Person3', 'person3@example.com');
+Query OK, 3 rows affected (0.007 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+MariaDB [TASK4]> 
+MariaDB [TASK4]> INSERT INTO Orders (customer_id, product, amount) VALUES
+    -> (1, 'Laptop', 1200.00),
+    -> (1, 'Mouse', 25.00),
+    -> (2, 'Phone', 800.00),
+    -> (3, 'Headphones', 100.00);
+Query OK, 4 rows affected (0.001 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+MariaDB [TASK4]> SELECT Customers.name, Orders.product, Orders.amount
+    -> FROM Customers
+    -> INNER JOIN Orders ON Customers.id = Orders.customer_id;
++---------+------------+---------+
+| name    | product    | amount  |
++---------+------------+---------+
+| Person1 | Laptop     | 1200.00 |
+| Person1 | Mouse      |   25.00 |
+| Person2 | Phone      |  800.00 |
+| Person3 | Headphones |  100.00 |
++---------+------------+---------+
+4 rows in set (0.001 sec)
+
+MariaDB [TASK4]> SELECT Customers.name, Orders.product, Orders.amount
+    -> FROM Customers
+    -> LEFT JOIN Orders ON Customers.id = Orders.customer_id;
++---------+------------+---------+
+| name    | product    | amount  |
++---------+------------+---------+
+| Person1 | Laptop     | 1200.00 |
+| Person1 | Mouse      |   25.00 |
+| Person2 | Phone      |  800.00 |
+| Person3 | Headphones |  100.00 |
++---------+------------+---------+
+4 rows in set (0.000 sec)
+
+MariaDB [TASK4]> INSERT INTO Customers (name, email) VALUES ('Person4', 'person4@example.com');
+Query OK, 1 row affected (0.007 sec)
+
+MariaDB [TASK4]> SELECT Customers.name, Orders.product, Orders.amount
+    -> FROM Customers
+    -> LEFT JOIN Orders ON Customers.id = Orders.customer_id;
++---------+------------+---------+
+| name    | product    | amount  |
++---------+------------+---------+
+| Person1 | Laptop     | 1200.00 |
+| Person1 | Mouse      |   25.00 |
+| Person2 | Phone      |  800.00 |
+| Person3 | Headphones |  100.00 |
+| Person4 | NULL       |    NULL |
++---------+------------+---------+
+5 rows in set (0.001 sec)
+
+MariaDB [TASK4]> 
