@@ -1,0 +1,68 @@
+MariaDB [TASK5]> USE TASK6;
+Database changed
+MariaDB [TASK6]> CREATE TABLE Orders (
+    ->     id INT AUTO_INCREMENT PRIMARY KEY,
+    ->     customer_name VARCHAR(100) NOT NULL,
+    ->     order_date DATE NOT NULL,
+    ->     amount DECIMAL(10,2) NOT NULL
+    -> );
+Query OK, 0 rows affected (0.011 sec)
+
+MariaDB [TASK6]> INSERT INTO Orders (customer_name, order_date, amount) VALUES
+    -> ('Person1', '2024-03-01', 500.00),
+    -> ('Person2', '2024-03-15', 1200.00),
+    -> ('Person3', '2024-03-25', 750.00),
+    -> ('Person4', '2024-02-28', 450.00),
+    -> ('Person5', CURDATE(), 900.00);  -- Inserts today's date dynamically
+Query OK, 5 rows affected (0.002 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+MariaDB [TASK6]> SELECT * FROM Orders 
+    -> WHERE order_date >= CURDATE() - INTERVAL 30 DAY;
++----+---------------+------------+--------+
+| id | customer_name | order_date | amount |
++----+---------------+------------+--------+
+|  5 | Person5       | 2025-03-29 | 900.00 |
++----+---------------+------------+--------+
+1 row in set (0.001 sec)
+
+MariaDB [TASK6]> SELECT customer_name, order_date, DATEDIFF(CURDATE(), order_date) AS days_since_order
+    -> FROM Orders;
++---------------+------------+------------------+
+| customer_name | order_date | days_since_order |
++---------------+------------+------------------+
+| Person1       | 2024-03-01 |              393 |
+| Person2       | 2024-03-15 |              379 |
+| Person3       | 2024-03-25 |              369 |
+| Person4       | 2024-02-28 |              395 |
+| Person5       | 2025-03-29 |                0 |
++---------------+------------+------------------+
+5 rows in set (0.001 sec)
+
+MariaDB [TASK6]> SELECT customer_name, order_date, DATE_ADD(order_date, INTERVAL 7 DAY) AS expected_delivery_date
+    -> FROM Orders;
++---------------+------------+------------------------+
+| customer_name | order_date | expected_delivery_date |
++---------------+------------+------------------------+
+| Person1       | 2024-03-01 | 2024-03-08             |
+| Person2       | 2024-03-15 | 2024-03-22             |
+| Person3       | 2024-03-25 | 2024-04-01             |
+| Person4       | 2024-02-28 | 2024-03-06             |
+| Person5       | 2025-03-29 | 2025-04-05             |
++---------------+------------+------------------------+
+5 rows in set (0.001 sec)
+
+MariaDB [TASK6]> SELECT customer_name, DATE_FORMAT(order_date, '%d-%m-%Y') AS formatted_date
+    -> FROM Orders;
++---------------+----------------+
+| customer_name | formatted_date |
++---------------+----------------+
+| Person1       | 01-03-2024     |
+| Person2       | 15-03-2024     |
+| Person3       | 25-03-2024     |
+| Person4       | 28-02-2024     |
+| Person5       | 29-03-2025     |
++---------------+----------------+
+5 rows in set (0.001 sec)
+
+MariaDB [TASK6]> 
