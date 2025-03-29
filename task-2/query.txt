@@ -1,0 +1,81 @@
+MariaDB [(none)]> USE TASK2;
+Database changed
+MariaDB [TASK2]> CREATE TABLE Employees (
+    ->     id INT AUTO_INCREMENT PRIMARY KEY,
+    ->     name VARCHAR(100) NOT NULL,
+    ->     department VARCHAR(50) NOT NULL,
+    ->     position VARCHAR(50) NOT NULL,
+    ->     salary DECIMAL(10,2) NOT NULL
+    -> );
+Query OK, 0 rows affected (0.011 sec)
+
+MariaDB [TASK2]> INSERT INTO Employees (name, department, position, salary) VALUES
+    -> ('person1', 'Sales', 'Sales Executive', 60000.00),
+    -> ('person2', 'IT', 'Software Engineer', 80000.00),
+    -> ('person3', 'HR', 'HR Manager', 75000.00),
+    -> ('person4', 'Sales', 'Sales Manager', 90000.00),
+    -> ('person5', 'IT', 'Data Analyst', 70000.00);
+Query OK, 5 rows affected (0.011 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+MariaDB [TASK2]> SELECT * FROM Employees WHERE department = 'Sales';
++----+---------+------------+-----------------+----------+
+| id | name    | department | position        | salary   |
++----+---------+------------+-----------------+----------+
+|  1 | person1 | Sales      | Sales Executive | 60000.00 |
+|  4 | person4 | Sales      | Sales Manager   | 90000.00 |
++----+---------+------------+-----------------+----------+
+2 rows in set (0.007 sec)
+
+MariaDB [TASK2]> SELECT * FROM Employees WHERE salary > 70000;
++----+---------+------------+-------------------+----------+
+| id | name    | department | position          | salary   |
++----+---------+------------+-------------------+----------+
+|  2 | person2 | IT         | Software Engineer | 80000.00 |
+|  3 | person3 | HR         | HR Manager        | 75000.00 |
+|  4 | person4 | Sales      | Sales Manager     | 90000.00 |
++----+---------+------------+-------------------+----------+
+3 rows in set (0.001 sec)
+
+MariaDB [TASK2]> SELECT * FROM Employees WHERE department = 'IT' AND salary < 80000;
++----+---------+------------+--------------+----------+
+| id | name    | department | position     | salary   |
++----+---------+------------+--------------+----------+
+|  5 | person5 | IT         | Data Analyst | 70000.00 |
++----+---------+------------+--------------+----------+
+1 row in set (0.001 sec)
+
+MariaDB [TASK2]> SELECT * FROM Employees WHERE department = 'IT' OR department = 'HR';
++----+---------+------------+-------------------+----------+
+| id | name    | department | position          | salary   |
++----+---------+------------+-------------------+----------+
+|  2 | person2 | IT         | Software Engineer | 80000.00 |
+|  3 | person3 | HR         | HR Manager        | 75000.00 |
+|  5 | person5 | IT         | Data Analyst      | 70000.00 |
++----+---------+------------+-------------------+----------+
+3 rows in set (0.001 sec)
+
+MariaDB [TASK2]> SELECT * FROM Employees ORDER BY salary ASC;
++----+---------+------------+-------------------+----------+
+| id | name    | department | position          | salary   |
++----+---------+------------+-------------------+----------+
+|  1 | person1 | Sales      | Sales Executive   | 60000.00 |
+|  5 | person5 | IT         | Data Analyst      | 70000.00 |
+|  3 | person3 | HR         | HR Manager        | 75000.00 |
+|  2 | person2 | IT         | Software Engineer | 80000.00 |
+|  4 | person4 | Sales      | Sales Manager     | 90000.00 |
++----+---------+------------+-------------------+----------+
+5 rows in set (0.001 sec)
+
+MariaDB [TASK2]> SELECT * FROM Employees ORDER BY name DESC;
++----+---------+------------+-------------------+----------+
+| id | name    | department | position          | salary   |
++----+---------+------------+-------------------+----------+
+|  5 | person5 | IT         | Data Analyst      | 70000.00 |
+|  4 | person4 | Sales      | Sales Manager     | 90000.00 |
+|  3 | person3 | HR         | HR Manager        | 75000.00 |
+|  2 | person2 | IT         | Software Engineer | 80000.00 |
+|  1 | person1 | Sales      | Sales Executive   | 60000.00 |
++----+---------+------------+-------------------+----------+
+5 rows in set (0.001 sec)
+
