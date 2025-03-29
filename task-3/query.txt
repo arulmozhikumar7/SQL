@@ -1,0 +1,74 @@
+MariaDB [TASK2]> CREATE DATABASE TASK3;
+Query OK, 1 row affected (0.001 sec)
+
+MariaDB [TASK2]> USE TASK3;
+Database changed
+MariaDB [TASK3]> CREATE TABLE Salaries (
+    ->     id INT AUTO_INCREMENT PRIMARY KEY,
+    ->     department VARCHAR(50) NOT NULL,
+    ->     employee_name VARCHAR(100) NOT NULL,
+    ->     salary DECIMAL(10,2) NOT NULL
+    -> );
+Query OK, 0 rows affected (0.011 sec)
+
+MariaDB [TASK3]> INSERT INTO Salaries (department, employee_name, salary) VALUES
+    -> ('Sales', 'Person1', 60000.00),
+    -> ('Sales', 'Person2', 90000.00),
+    -> ('IT', 'Person3', 80000.00),
+    -> ('IT', 'Person4', 70000.00),
+    -> ('HR', 'Person5', 75000.00),
+    -> ('HR', 'Person6', 72000.00),
+    -> ('IT', 'Person7', 95000.00);
+Query OK, 7 rows affected (0.007 sec)
+Records: 7  Duplicates: 0  Warnings: 0
+
+MariaDB [TASK3]> SELECT department, COUNT(*) AS total_employees
+    -> FROM Salaries
+    -> GROUP BY department;
++------------+-----------------+
+| department | total_employees |
++------------+-----------------+
+| HR         |               2 |
+| IT         |               3 |
+| Sales      |               2 |
++------------+-----------------+
+3 rows in set (0.001 sec)
+
+MariaDB [TASK3]> SELECT department, SUM(salary) AS total_salary
+    -> FROM Salaries
+    -> GROUP BY department;
++------------+--------------+
+| department | total_salary |
++------------+--------------+
+| HR         |    147000.00 |
+| IT         |    245000.00 |
+| Sales      |    150000.00 |
++------------+--------------+
+3 rows in set (0.000 sec)
+
+MariaDB [TASK3]> SELECT department, AVG(salary) AS average_salary
+    -> FROM Salaries
+    -> GROUP BY department;
++------------+----------------+
+| department | average_salary |
++------------+----------------+
+| HR         |   73500.000000 |
+| IT         |   81666.666667 |
+| Sales      |   75000.000000 |
++------------+----------------+
+3 rows in set (0.001 sec)
+
+MariaDB [TASK3]> SELECT department, SUM(salary) AS total_salary
+    -> FROM Salaries
+    -> GROUP BY department
+    -> HAVING total_salary > 140000;
++------------+--------------+
+| department | total_salary |
++------------+--------------+
+| HR         |    147000.00 |
+| IT         |    245000.00 |
+| Sales      |    150000.00 |
++------------+--------------+
+3 rows in set (0.001 sec)
+
+MariaDB [TASK3]> 
