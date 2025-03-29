@@ -1,0 +1,77 @@
+MariaDB [TASK4]> USE TASK5;
+Database changed
+MariaDB [TASK5]> CREATE TABLE Departments (
+    ->     id INT AUTO_INCREMENT PRIMARY KEY,
+    ->     name VARCHAR(100) NOT NULL
+    -> );
+Query OK, 0 rows affected (0.011 sec)
+
+MariaDB [TASK5]> 
+MariaDB [TASK5]> CREATE TABLE Employees (
+    ->     id INT AUTO_INCREMENT PRIMARY KEY,
+    ->     name VARCHAR(100) NOT NULL,
+    ->     salary DECIMAL(10,2) NOT NULL,
+    ->     department_id INT NOT NULL,
+    ->     FOREIGN KEY (department_id) REFERENCES Departments(id) ON DELETE CASCADE
+    -> );
+Query OK, 0 rows affected (0.005 sec)
+
+MariaDB [TASK5]> -- Insert Departments
+MariaDB [TASK5]> INSERT INTO Departments (name) VALUES
+    -> ('HR'),
+    -> ('IT'),
+    -> ('Sales');
+Query OK, 3 rows affected (0.007 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+MariaDB [TASK5]> 
+MariaDB [TASK5]> -- Insert Employees (Assigning Them to Departments)
+MariaDB [TASK5]> INSERT INTO Employees (name, salary, department_id) VALUES
+    -> ('Person1', 50000, 1), -- HR
+    -> ('Person2', 60000, 1), -- HR
+    -> ('Person3', 75000, 2), -- IT
+    -> ('Person4', 80000, 2), -- IT
+    -> ('Person5', 40000, 3), -- Sales
+    -> ('Person6', 45000, 3); -- Sales
+Query OK, 6 rows affected (0.001 sec)
+Records: 6  Duplicates: 0  Warnings: 0
+
+MariaDB [TASK5]> SELECT name, salary, department_id 
+    -> FROM Employees 
+    -> WHERE salary > (SELECT AVG(salary) FROM Employees WHERE department_id = Employees.department_id);
++---------+----------+---------------+
+| name    | salary   | department_id |
++---------+----------+---------------+
+| Person2 | 60000.00 |             1 |
+| Person3 | 75000.00 |             2 |
+| Person4 | 80000.00 |             2 |
++---------+----------+---------------+
+3 rows in set (0.007 sec)
+
+MariaDB [TASK5]> SELECT name, salary, 
+    ->        (SELECT AVG(salary) FROM Employees WHERE department_id = e.department_id) AS avg_salary
+    -> FROM Employees e;
++---------+----------+--------------+
+| name    | salary   | avg_salary   |
++---------+----------+--------------+
+| Person1 | 50000.00 | 55000.000000 |
+| Person2 | 60000.00 | 55000.000000 |
+| Person3 | 75000.00 | 77500.000000 |
+| Person4 | 80000.00 | 77500.000000 |
+| Person5 | 40000.00 | 42500.000000 |
+| Person6 | 45000.00 | 42500.000000 |
++---------+----------+--------------+
+6 rows in set (0.001 sec)
+
+MariaDB [TASK5]> SELECT name FROM Departments 
+    -> WHERE id IN (SELECT department_id FROM Employees WHERE salary > 70000);
++------+
+| name |
++------+
+| IT   |
++------+
+1 row in set (0.001 sec)
+
+MariaDB [TASK5]> 
+
+
