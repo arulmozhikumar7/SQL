@@ -1,0 +1,62 @@
+MariaDB [TASK7]> use TASK8;
+Database changed
+MariaDB [TASK8]> CREATE TABLE Employees (
+    ->     id INT AUTO_INCREMENT PRIMARY KEY,
+    ->     name VARCHAR(100) NOT NULL,
+    ->     department VARCHAR(100),
+    ->     manager_id INT NULL
+    -> );
+Query OK, 0 rows affected (0.011 sec)
+
+MariaDB [TASK8]> INSERT INTO Employees (name, department, manager_id) VALUES
+    -> ('CEO', 'Management', NULL),
+    -> ('Manager1', 'IT', 1),
+    -> ('Manager2', 'HR', 1),
+    -> ('Person1', 'IT', 2),
+    -> ('Person2', 'IT', 2),
+    -> ('Person3', 'HR', 3),
+    -> ('Person4', 'HR', 3);
+Query OK, 7 rows affected (0.007 sec)
+Records: 7  Duplicates: 0  Warnings: 0
+
+MariaDB [TASK8]> WITH IT_Employees AS (
+    ->     SELECT id, name, department FROM Employees WHERE department = 'IT'
+    -> )
+    -> SELECT * FROM IT_Employees;
++----+----------+------------+
+| id | name     | department |
++----+----------+------------+
+|  2 | Manager1 | IT         |
+|  4 | Person1  | IT         |
+|  5 | Person2  | IT         |
++----+----------+------------+
+3 rows in set (0.009 sec)
+
+MariaDB [TASK8]> WITH RECURSIVE EmployeeHierarchy AS (
+    ->     -- Base Case: Start with the CEO (top-level manager)
+    ->     SELECT id, name, department, manager_id, 1 AS level
+    ->     FROM Employees
+    ->     WHERE manager_id IS NULL
+    ->     
+    ->     UNION ALL
+    -> 
+    ->     -- Recursive Case: Find employees reporting to the previous level
+    ->     SELECT e.id, e.name, e.department, e.manager_id, eh.level + 1
+    ->     FROM Employees e
+    ->     INNER JOIN EmployeeHierarchy eh ON e.manager_id = eh.id
+    -> )
+    -> SELECT * FROM EmployeeHierarchy ORDER BY level, manager_id;
++------+----------+------------+------------+-------+
+| id   | name     | department | manager_id | level |
++------+----------+------------+------------+-------+
+|    1 | CEO      | Management |       NULL |     1 |
+|    2 | Manager1 | IT         |          1 |     2 |
+|    3 | Manager2 | HR         |          1 |     2 |
+|    4 | Person1  | IT         |          2 |     3 |
+|    5 | Person2  | IT         |          2 |     3 |
+|    7 | Person4  | HR         |          3 |     3 |
+|    6 | Person3  | HR         |          3 |     3 |
++------+----------+------------+------------+-------+
+7 rows in set (0.001 sec)
+
+MariaDB [TASK8]> 
