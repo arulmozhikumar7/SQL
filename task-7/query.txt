@@ -1,0 +1,67 @@
+MariaDB [TASK7]> CREATE TABLE Employees (
+    ->     id INT AUTO_INCREMENT PRIMARY KEY,
+    ->     name VARCHAR(100) NOT NULL,
+    ->     department VARCHAR(100) NOT NULL,
+    ->     salary INT NOT NULL
+    -> );
+Query OK, 0 rows affected (0.011 sec)
+
+MariaDB [TASK7]> INSERT INTO Employees (name, department, salary) VALUES
+    -> ('Person1', 'IT', 80000),
+    -> ('Person2', 'IT', 75000),
+    -> ('Person3', 'HR', 60000),
+    -> ('Person4', 'HR', 50000),
+    -> ('Person5', 'Sales', 45000),
+    -> ('Person6', 'Sales', 40000),
+    -> ('Person7', 'Sales', 45000);
+Query OK, 7 rows affected (0.007 sec)
+Records: 7  Duplicates: 0  Warnings: 0
+
+MariaDB [TASK7]> SELECT name, department, salary,
+    ->        ROW_NUMBER() OVER (PARTITION BY department ORDER BY salary DESC) AS row_num
+    -> FROM Employees;
++---------+------------+--------+---------+
+| name    | department | salary | row_num |
++---------+------------+--------+---------+
+| Person3 | HR         |  60000 |       1 |
+| Person4 | HR         |  50000 |       2 |
+| Person1 | IT         |  80000 |       1 |
+| Person2 | IT         |  75000 |       2 |
+| Person7 | Sales      |  45000 |       1 |
+| Person5 | Sales      |  45000 |       2 |
+| Person6 | Sales      |  40000 |       3 |
++---------+------------+--------+---------+
+7 rows in set (0.001 sec)
+
+MariaDB [TASK7]> SELECT name, department, salary,
+    ->        RANK() OVER (PARTITION BY department ORDER BY salary DESC) AS rank 
+    -> FROM Employees;
++---------+------------+--------+------+
+| name    | department | salary | rank |
++---------+------------+--------+------+
+| Person3 | HR         |  60000 |    1 |
+| Person4 | HR         |  50000 |    2 |
+| Person1 | IT         |  80000 |    1 |
+| Person2 | IT         |  75000 |    2 |
+| Person5 | Sales      |  45000 |    1 |
+| Person7 | Sales      |  45000 |    1 |
+| Person6 | Sales      |  40000 |    3 |
++---------+------------+--------+------+
+7 rows in set (0.001 sec)
+
+MariaDB [TASK7]> SELECT name, department, salary,
+    ->        DENSE_RANK() OVER (PARTITION BY department ORDER BY salary DESC) AS dense_rank
+    -> FROM Employees;
++---------+------------+--------+------------+
+| name    | department | salary | dense_rank |
++---------+------------+--------+------------+
+| Person3 | HR         |  60000 |          1 |
+| Person4 | HR         |  50000 |          2 |
+| Person1 | IT         |  80000 |          1 |
+| Person2 | IT         |  75000 |          2 |
+| Person5 | Sales      |  45000 |          1 |
+| Person7 | Sales      |  45000 |          1 |
+| Person6 | Sales      |  40000 |          2 |
++---------+------------+--------+------------+
+7 rows in set (0.001 sec)
+
